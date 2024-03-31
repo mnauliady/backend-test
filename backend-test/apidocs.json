@@ -1,0 +1,787 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Books",
+    "description": "List of books API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "localhost"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Books",
+      "description": "Books"
+    },
+    {
+      "name": "Members",
+      "description": "Member"
+    },
+    {
+      "name": "Borrow Book",
+      "description": "Borrow book"
+    }
+  ],
+  "paths": {
+    "/books": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "Get All Books",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data length": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "books": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "example": "JK-45"
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Harry Potter"
+                          },
+                          "author": {
+                            "type": "string",
+                            "example": "J.K Rowling"
+                          },
+                          "stock": {
+                            "type": "integer",
+                            "example": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to fetch data"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Books"],
+        "summary": "Create New Books",
+        "description": "Add new book to db",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "author": {
+                    "type": "string"
+                  },
+                  "stock": {
+                    "type": "integer"
+                  }
+                },
+                "required": ["code", "title", "author", "stock"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Book created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Book created successfully"
+                    },
+                    "books": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "NRN-7"
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "The Lion, the Witch and the Wardrobe"
+                        },
+                        "author": {
+                          "type": "string",
+                          "example": "C.S. Lewis"
+                        },
+                        "stock": {
+                          "type": "integer",
+                          "example": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Book code already exist"
+          },
+          "500": {
+            "description": "Error creating book"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Books"],
+        "summary": "Update book data",
+        "description": "Update book data",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "author": {
+                    "type": "string"
+                  },
+                  "stock": {
+                    "type": "integer"
+                  }
+                },
+                "required": ["code"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Update successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "code is required"
+          },
+          "404": {
+            "description": "book code not found"
+          },
+          "500": {
+            "description": "Error update book"
+          }
+        }
+      }
+    },
+    "/books/{code}": {
+      "delete": {
+        "tags": ["Books"],
+        "summary": "Delete book by code",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "code",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Delete successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "code is required"
+          },
+          "404": {
+            "description": "Book code not found"
+          },
+          "500": {
+            "description": "Error delete book"
+          }
+        }
+      }
+    },
+    "/available-books": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "Get Available Books",
+        "description": "Show books that are in stock",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "books": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "example": "JK-45"
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Harry Potter"
+                          },
+                          "author": {
+                            "type": "string",
+                            "example": "J.K Rowling"
+                          },
+                          "stock": {
+                            "type": "integer",
+                            "example": 0
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to fetch data"
+          }
+        }
+      }
+    },
+    "/members": {
+      "get": {
+        "tags": ["Members"],
+        "summary": "Get All Members",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "books": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "example": "M002"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "penalty": {
+                            "type": "boolean",
+                            "example": "false"
+                          },
+                          "penaltyDate": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to fetch data"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Members"],
+        "summary": "Create New member",
+        "description": "Add new member to db",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": ["code", "name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Book created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "string",
+                      "example": "Book created successfully"
+                    },
+                    "member": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "M001"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Udin"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Member code already exist"
+          },
+          "500": {
+            "description": "Error creating member"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Members"],
+        "summary": "Update member data",
+        "description": "Update member data",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "penalty": {
+                    "type": "boolean"
+                  },
+                  "penaltyDate": {
+                    "type": "string"
+                  }
+                },
+                "required": ["code"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Update successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "code is required"
+          },
+          "404": {
+            "description": "member code not found"
+          },
+          "500": {
+            "description": "Error update member"
+          }
+        }
+      }
+    },
+    "/members/{code}": {
+      "delete": {
+        "tags": ["Members"],
+        "summary": "Delete member by code",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "code",
+            "required": true,
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Delete successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "code is required"
+          },
+          "404": {
+            "description": "member code not found"
+          },
+          "500": {
+            "description": "Error delete member"
+          }
+        }
+      }
+    },
+    "/number-of-borrowed-book": {
+      "get": {
+        "tags": ["Members"],
+        "summary": "Get the number of books being borrowed by each member",
+        "description": "Show the number of books being borrowed by each member",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data length": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "total": {
+                            "type": "string",
+                            "description": "total of borrowed book"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to fetch data"
+          }
+        }
+      }
+    },
+    "/member-borrowing-history": {
+      "get": {
+        "tags": ["Members"],
+        "summary": "Get all member borrowing history",
+        "description": "Show books borrowed by members (History/All time)",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data length": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "total": {
+                            "type": "string",
+                            "description": "total of borrowed book"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to fetch data"
+          }
+        }
+      }
+    },
+    "/borrow-book": {
+      "get": {
+        "tags": ["Borrow Book"],
+        "summary": "Get All Borrow Book",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "books": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "borrowedAt": {
+                            "type": "string"
+                          },
+                          "returnAt": {
+                            "type": "string"
+                          },
+                          "maxReturnAt": {
+                            "type": "integer"
+                          },
+                          "bookCode": {
+                            "type": "integer"
+                          },
+                          "memberCode": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to fetch data"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Borrow Book"],
+        "summary": "Create New Borrow Book",
+        "description": "Add new borrow book to db",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "bookCode": {
+                    "type": "string"
+                  },
+                  "memberCode": {
+                    "type": "string"
+                  }
+                },
+                "required": ["bookCode", "memberCode"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Borrow book created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Borrow book created successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "borrowedAt": {
+                          "type": "string"
+                        },
+                        "returnAt": {
+                          "type": "string"
+                        },
+                        "maxReturnAt": {
+                          "type": "string"
+                        },
+                        "bookCode": {
+                          "type": "string"
+                        },
+                        "memberCode": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Book code not found"
+          },
+          "500": {
+            "description": "Error creating borrow book data"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Borrow Book"],
+        "summary": "Update/Return borrow book",
+        "description": "return borrowed book",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "bookCode": {
+                    "type": "string"
+                  },
+                  "memberCode": {
+                    "type": "string"
+                  }
+                },
+                "required": ["bookCode", "memberCode"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "success return book",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "default": "success return book"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "members ${memberCode} do not borrow books ${bookCode}"
+          },
+          "500": {
+            "description": "Error creating borrow book data"
+          }
+        }
+      }
+    }
+  }
+}
